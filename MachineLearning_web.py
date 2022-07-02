@@ -67,6 +67,7 @@ try:
         #Características
         st.write('Intersección (b) ', lin_reg.intercept_)
         st.write('Pendiente (m) ', lin_reg.coef_[0])
+        st.write('Función de tendencia lineal(y=mx+b): y = ',lin_reg.coef_[0],'x + ',lin_reg.intercept_)
         st.write('Error medio: ', mean_squared_error(y_axis,y_pred,squared=True))
         st.write('R^2: ',r2_score(y_axis,y_pred))
         #Prediccion
@@ -106,6 +107,12 @@ try:
         #Características
         st.write('Error medio: ', np.sqrt(mean_squared_error(y_axis,y_pred,squared=True)))
         st.write('R^2: ',r2_score(y_axis,y_pred))
+        cadena = ''
+        size = len(lin_reg.coef_)
+        for i in lin_reg.coef_:
+            size = size-1
+            cadena += '('+ str(i) + 'x^'+str(size)+')+'
+        st.write('Función de tendencia polinomial(anx^n+an-1x^n-1+...+a0x^0): ',cadena[:-1])
         #Prediccion
         st.write('PREDICCION ESPECIFICA')
         number_input = st.number_input('Insertar número parapredicción de tendencia específica')
