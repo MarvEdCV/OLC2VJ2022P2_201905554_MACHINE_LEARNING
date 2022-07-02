@@ -1,65 +1,53 @@
+from tkinter.messagebox import NO
+from nbformat import write
 import streamlit as st
-import pickle
 import pandas as pd
+import os
+ 
+#Asignamos un titulo
+st.title('Machine Learning')
 
-#Extraer los archivos pickle
-with open('linea_reg.pkl','rb') as li:
-    lin_reg = pickle.load(li)
+#Titulo de la side bar
+st.sidebar.header('ALGORITMOS DE MACHINE LEARNING')
 
-with open('log_reg.pkl','rb') as lo:
-    log_reg = pickle.load(lo)
+options = ['Regresión lineal','Regresión polinomial','Clasificador Gaussiano','Clasificador de árboles de desición','Redes neuronales']
+model = st.sidebar.selectbox('Selecciona el algoritmo a utilizar',options)
 
-with open('svc_m.pkl','rb') as sv:
-    svc_m = pickle.load(sv)
+st.subheader(model)
 
+#Obetenemos el archivo
+uploaded_file = st.file_uploader("Escoger archivo",type = ['csv','xls','xlsx','json'],help="¡Los archivos deben tener encabezados!")
 
-#Metodo de entrada al script
+global df,nombre_archivo
+if uploaded_file is not None:
 
-#funcion para clasificar las plantas
-def classify(num):
-    if num == 0:
-        return 'Es un numero cero'
-    elif num == 1:
-        return 'Es un uno pa'
-    else:
-        return 'Ni cero ni uno viejo :p'
+    #Obtenemos la extension del archivo que venga
+    split_tup = os.path.splitext(uploaded_file.name)
+    nombre_archivo = split_tup[0]
+    extension = split_tup[1]
 
-def main():
-    #Asignamos un titulo
-    st.title('Machine Learning')
-
-    #Titulo de la side bar
-    st.sidebar.header('User Input Parameter')
+    st.write(extension)
     
-    #Funcion para poner los parametros en sidebar
-    def user_input_parameters():
-        sepal_length = st.sidebar.slider('Sepal length',4.3,7.9,5.4)
-        sepal_width = st.sidebar.slider('Sepal width',2.0,4.4,3.4)
-        petal_length = st.sidebar.slider('Petal length',1.0,6.9,1.3)
-        petal_width = st.sidebar.slider('Petal width',0.1,2.5,0.2)
-        data = {'sepal_length':sepal_length,
-                'sepal_width':sepal_width,
-                'petal_length':petal_length,
-                'petal_width':petal_width
-                }
-        features = pd.DataFrame(data, index = [0])
-        return features
-    df = user_input_parameters()
-
-    #Escoger el modelo preferido
-    option = ['Linear Regression','Logistic Regression','SVM']
-    model = st.sidebar.selectbox('Which model you like to use?',option)
-
-    st.subheader('User Input Parameters')
-    st.subheader(model)
+    if (extension == '.csv'):
+        df = pd.read_csv(uploaded_file)
+    elif(extension == '.xlsx'):
+        df = pd.read_excel(uploaded_file)
+    
+    st.write("Nombre del archivo:",uploaded_file.name)
+    
+    
+#try:
     st.write(df)
+    if(model == 'Regresión lineal'):
+        st.write('Ejecutar regresion lineal mijo')
+    elif(model == 'Regresión polinomial'):
+        st.write('la del polinomio')
+#except Exception as e:
+#    print(e)
+#    st.write("Por favor subir archivo para poder ejecutar el algoritmo")
 
-    if st.button('RUN'):
-        if model == 'Linear Regression':
-            st.success(classify(lin_reg.predict(df)))
-        elif model == 'Logistic Regression':
-            st.success(classify(log_reg.predict(df)))
-        else:
-            st.success(classify(svc_m.predict(df)))
-if __name__ == "__main__":
-    main()
+
+
+
+
+    
