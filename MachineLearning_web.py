@@ -17,7 +17,7 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn import preprocessing
 #Asignamos un titulo
 st.title('Machine Learning')
-
+st.subheader('Marvin Eduardo Catalán Véliz - 201905554')
 #Titulo de la side bar
 st.sidebar.header('ALGORITMOS DE MACHINE LEARNING')
 
