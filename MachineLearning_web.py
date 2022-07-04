@@ -1,15 +1,20 @@
 from operator import mod
+from posixpath import split
 from statistics import mode
+from click import confirm
 import streamlit as st
 import pandas as pd
 import os
+import re
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression;
 from sklearn.metrics import mean_squared_error, r2_score;
 from PIL import Image
-
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn import preprocessing
 #Asignamos un titulo
 st.title('Machine Learning')
 
@@ -34,9 +39,10 @@ if uploaded_file is not None:
 
     if (extension == '.csv'):
         df = pd.read_csv(uploaded_file)
-    elif(extension == '.xlsx'):
+    elif(extension == '.xlsx' or extension == '.xls'):
         df = pd.read_excel(uploaded_file)
-      
+    elif(extension == '.json'):
+        df = pd.read_json(uploaded_file)
 try:
     st.write(df)
     headers = df.head()
@@ -122,6 +128,68 @@ try:
         x_new = x_new[:,np.newaxis]
         x_trans = poly.fit_transform(x_new)
         st.write('Prediccion : ',lin_reg.predict(x_trans))
+    elif (model == 'Clasificador Gaussiano'):
+        #number_input = st.number_input('Ingrese el numero de variables de entrada')
+        entradas = st.multiselect('Seleccione las variables de entrada o variables independientes para el clasificador',headers.columns)
+        salida = st.selectbox('Seleccione la variable de salida o variable dependiente',headers.columns)
+        y = (df[salida].tolist())
+        #Obtener las variables independientes
+        feature = []
+        size = len(entradas)
+        le = preprocessing.LabelEncoder()
+        for iterator in entradas:
+            temporal = df[iterator].tolist()
+            temporal2 = le.fit_transform(temporal)
+            feature.append(temporal2)
+            #Esto es sin label encoder
+            #feature.append(df[iterator].tolist())
+        st.write("PREDICCION")
+        numbers = st.text_input("Ingrese los datos de predicción separados por coma en el orden que los selecciono arriba",help="Importante si el valor es True o False ponerlo en balor binario 1 o 0")
+        x = list(zip(*feature))
+        if(st.button('Ver arreglo clasificado')):
+            st.write(x)
+        if(st.button('Correr Clasificador Gaussiano')):
+            clf = GaussianNB()
+            #adaptacion de datos
+            clf.fit(x,y)
+            print(len(numbers))
+            if(len(numbers)>0):
+                numeros_split = numbers.split(",")
+                predict = [int(x) for x in numeros_split]
+                predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
+                try:
+                    st.write(clf.predict([predict]))
+                except Exception as e:
+                    st.write(e)
+                    st.write('Tiene datos incorrectos en el arreglo a predecir')
+            else:
+                st.write('El arreglo para la prediccion esta vacio o tiene datos incorrectos')
+    elif(model == 'Clasificador de árboles de desición'):
+        entradas = st.multiselect('Seleccione las variables de entrada o variables independientes para el clasificador',headers.columns)
+        salida = st.selectbox('Seleccione la variable de salida o variable dependiente',headers.columns)
+        y = (df[salida].tolist())
+        #Obtener las variables independientes
+        feature = []
+        size = len(entradas)
+        le = preprocessing.LabelEncoder()
+        for iterator in entradas:
+            temporal = df[iterator].tolist()
+            temporal2 = le.fit_transform(temporal)
+            feature.append(temporal2)
+            #Esto es sin label encoder
+            #feature.append(df[iterator].tolist())
+        st.write("PREDICCION")
+        x = list(zip(*feature))
+        if(st.button('Ver arreglo clasificado')):
+            st.write(x)
+        if(st.button('Generar árbol de desición')):
+            clf = DecisionTreeClassifier().fit(x,y)
+            #adaptacion de datos
+            plot_tree(clf, filled = True)
+            plt.savefig('tree.png')
+            plt.close()
+            image = Image.open('tree.png')
+            st.image(image, caption = 'Árbol de desición')
 except Exception as e:
     print(e)
     st.write("Por favor subir archivo para poder ejecutar el algoritmo")
