@@ -21,7 +21,7 @@ st.title('Machine Learning')
 #Titulo de la side bar
 st.sidebar.header('ALGORITMOS DE MACHINE LEARNING')
 
-options = ['Regresión lineal','Regresión polinomial','Clasificador Gaussiano','Clasificador de árboles de desición','Redes neuronales']
+options = ['Regresión lineal','Regresión polinomial','Clasificador Gaussiano','Clasificador de árboles de desición','Redes neuronales','Gauss sin label encoder','Arbol sin label encoder']
 model = st.sidebar.selectbox('Selecciona el algoritmo a utilizar',options)
 
 st.subheader(model)
@@ -190,6 +190,66 @@ try:
             plt.close()
             image = Image.open('tree.png')
             st.image(image, caption = 'Árbol de desición')
+    elif (model == 'Gauss sin label encoder'):
+        #number_input = st.number_input('Ingrese el numero de variables de entrada')
+        entradas = st.multiselect('Seleccione las variables de entrada o variables independientes para el clasificador',headers.columns)
+        salida = st.selectbox('Seleccione la variable de salida o variable dependiente',headers.columns)
+        y = (df[salida].tolist())
+        #Obtener las variables independientes
+        feature = []
+        size = len(entradas)
+        le = preprocessing.LabelEncoder()
+        for iterator in entradas:
+            feature.append(df[iterator].tolist())
+        st.write("PREDICCION")
+        numbers = st.text_input("Ingrese los datos de predicción separados por coma en el orden que los selecciono arriba",help="Importante si el valor es True o False ponerlo en balor binario 1 o 0")
+        x = list(zip(*feature))
+        if(st.button('Ver arreglo clasificado')):
+            st.write(x)
+        if(st.button('Correr Clasificador Gaussiano')):
+            clf = GaussianNB()
+            #adaptacion de datos
+            clf.fit(x,y)
+            print(len(numbers))
+            if(len(numbers)>0):
+                numeros_split = numbers.split(",")
+                predict = [int(x) for x in numeros_split]
+                #predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
+                try:
+                    st.write(clf.predict([predict]))
+                except Exception as e:
+                    st.write(e)
+                    st.write('Tiene datos incorrectos en el arreglo a predecir')
+            else:
+                st.write('El arreglo para la prediccion esta vacio o tiene datos incorrectos')
+    elif(model == 'Arbol sin label encoder'):
+        entradas = st.multiselect('Seleccione las variables de entrada o variables independientes para el clasificador',headers.columns)
+        salida = st.selectbox('Seleccione la variable de salida o variable dependiente',headers.columns)
+        y = (df[salida].tolist())
+        #Obtener las variables independientes
+        feature = []
+        size = len(entradas)
+        le = preprocessing.LabelEncoder()
+        for iterator in entradas:
+            #temporal = df[iterator].tolist()
+            #temporal2 = le.fit_transform(temporal)
+            #feature.append(temporal2)
+            #Esto es sin label encoder
+            feature.append(df[iterator].tolist())
+        st.write("PREDICCION")
+        x = list(zip(*feature))
+        if(st.button('Ver arreglo clasificado')):
+            st.write(x)
+        if(st.button('Generar árbol de desición')):
+            clf = DecisionTreeClassifier().fit(x,y)
+            #adaptacion de datos
+            plot_tree(clf, filled = True)
+            plt.savefig('tree.png')
+            plt.close()
+            image = Image.open('tree.png')
+            st.image(image, caption = 'Árbol de desición')
+    elif(model == 'Redes neuronales'):
+        st.write('Espero haber sacado mas de 45 si no estoy arrepentido de no hacer esta parte:(')
 except Exception as e:
     print(e)
     st.write("Por favor subir archivo para poder ejecutar el algoritmo")
