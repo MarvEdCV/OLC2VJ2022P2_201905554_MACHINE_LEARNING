@@ -308,7 +308,7 @@ try:
         if(st.button('Generar redes neuronales')):
             scaler = StandardScaler()
             scaler.fit(feature,y)            
-            mlp = MLPClassifier(hidden_layer_sizes=(10,10,10),max_iter=10000,solver='lbfgs')
+            mlp = MLPClassifier(hidden_layer_sizes=(100,100,100),max_iter=10000,solver='lbfgs')
             mlp.fit(x,y)
 
             #PREDICCIONES PARA X 
