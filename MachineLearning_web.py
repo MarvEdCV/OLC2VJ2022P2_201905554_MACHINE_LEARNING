@@ -148,6 +148,7 @@ try:
             #Esto es sin label encoder
             #feature.append(df[iterator].tolist())
         st.write("PREDICCION")
+
         numbers = st.text_input("Ingrese los datos de predicción separados por coma en el orden que los selecciono arriba",help="Importante si el valor es True o False ponerlo en balor binario 1 o 0")
         x = list(zip(*feature))
         if(st.button('Ver arreglo clasificado')):
@@ -156,11 +157,14 @@ try:
             clf = GaussianNB()
             #adaptacion de datos
             clf.fit(x,y)
+            st.write('Predicción de X')
+            st.write(clf.predict(x))
             if(len(numbers)>0):
                 numeros_split = numbers.split(",")
                 predict = [int(x) for x in numeros_split]
                 predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
                 try:
+                    st.write('Predicción Especifica')
                     st.write(clf.predict([predict]))
                 except Exception as e:
                     st.write(e)
@@ -213,11 +217,14 @@ try:
             clf = GaussianNB()
             #adaptacion de datos
             clf.fit(x,y)
+            st.write('Predicción de X')
+            st.write(clf.predict(x))
             if(len(numbers)>0):
                 numeros_split = numbers.split(",")
                 predict = [int(x) for x in numeros_split]
                 #predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
                 try:
+                    st.write("Prediccion especifica")
                     st.write(clf.predict([predict]))
                 except Exception as e:
                     st.write(e)
@@ -256,7 +263,6 @@ try:
         y = (df[salida].tolist())
         #Obtener las variables independientes
         feature = []
-        size = len(entradas)
         le = preprocessing.LabelEncoder()
         for iterator in entradas:
             temporal = df[iterator].tolist()
@@ -299,7 +305,6 @@ try:
         y = (df[salida].tolist())
         #Obtener las variables independientes
         feature = []
-        size = len(entradas)
         le = preprocessing.LabelEncoder()
         for iterator in entradas:
             #temporal = df[iterator].tolist()
