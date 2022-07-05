@@ -161,7 +161,7 @@ try:
             st.write(clf.predict(x))
             if(len(numbers)>0):
                 numeros_split = numbers.split(",")
-                predict = [int(x) for x in numeros_split]
+                predict = [(x) for x in numeros_split]
                 predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
                 try:
                     st.write('Predicción Especifica')
@@ -186,6 +186,7 @@ try:
             #Esto es sin label encoder
             #feature.append(df[iterator].tolist())
         st.write("PREDICCION")
+        numbers = st.text_input("Ingrese los datos de predicción separados por coma en el orden que los selecciono arriba",help="Importante si el valor es True o False ponerlo en balor binario 1 o 0")
         x = list(zip(*feature))
         if(st.button('Ver arreglo clasificado')):
             st.write(x)
@@ -197,6 +198,20 @@ try:
             plt.close()
             image = Image.open('tree.png')
             st.image(image, caption = 'Árbol de desición')
+            st.write('Predicción de X')
+            st.write(clf.predict(x))
+            if(len(numbers)>0):
+                numeros_split = numbers.split(",")
+                predict = [(x) for x in numeros_split]
+                predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
+                try:
+                    st.write('Predicción Especifica')
+                    st.write(clf.predict([predict]))
+                except Exception as e:
+                    st.write(e)
+                    st.write('Tiene datos incorrectos en el arreglo a predecir')
+            else:
+                st.write('El arreglo para la prediccion esta vacio o tiene datos incorrectos')
     elif (model == 'Gauss sin label encoder'):
         #number_input = st.number_input('Ingrese el numero de variables de entrada')
         entradas = st.multiselect('Seleccione las variables de entrada o variables independientes para el clasificador',headers.columns)
@@ -221,7 +236,7 @@ try:
             st.write(clf.predict(x))
             if(len(numbers)>0):
                 numeros_split = numbers.split(",")
-                predict = [int(x) for x in numeros_split]
+                predict = [(x) for x in numeros_split]
                 #predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
                 try:
                     st.write("Prediccion especifica")
@@ -246,6 +261,7 @@ try:
             #Esto es sin label encoder
             feature.append(df[iterator].tolist())
         st.write("PREDICCION")
+        numbers = st.text_input("Ingrese los datos de predicción separados por coma en el orden que los selecciono arriba",help="Importante si el valor es True o False ponerlo en balor binario 1 o 0")
         x = list(zip(*feature))
         if(st.button('Ver arreglo clasificado')):
             st.write(x)
@@ -257,6 +273,20 @@ try:
             plt.close()
             image = Image.open('tree.png')
             st.image(image, caption = 'Árbol de desición')
+            st.write('Predicción de X')
+            st.write(clf.predict(x))
+            if(len(numbers)>0):
+                numeros_split = numbers.split(",")
+                predict = [(x) for x in numeros_split]
+                predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
+                try:
+                    st.write('Predicción Especifica')
+                    st.write(clf.predict([predict]))
+                except Exception as e:
+                    st.write(e)
+                    st.write('Tiene datos incorrectos en el arreglo a predecir')
+            else:
+                st.write('El arreglo para la prediccion esta vacio o tiene datos incorrectos')
     elif(model == 'Redes neuronales'):
         entradas = st.multiselect('Seleccione las variables de entrada o variables independientes para el clasificador',headers.columns)
         salida = st.selectbox('Seleccione la variable de salida o variable dependiente',headers.columns)
@@ -278,18 +308,17 @@ try:
         if(st.button('Generar redes neuronales')):
             scaler = StandardScaler()
             scaler.fit(feature,y)            
-            mlp = MLPClassifier(hidden_layer_sizes=(100,100,100),max_iter=1000,solver='lbfgs')
+            mlp = MLPClassifier(hidden_layer_sizes=(10,10,10),max_iter=10000,solver='lbfgs')
             mlp.fit(x,y)
 
             #PREDICCIONES PARA X 
             st.write('TABLA DE PREDICCIONES PARA X')
             pred = mlp.predict(x)
             st.write(pred)
-
             #PREDICCIONES PARA 
             if(len(numbers)>0):
                 numeros_split = numbers.split(",")
-                predict = [int(x) for x in numeros_split]
+                predict = [(x) for x in numeros_split]
                 predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
                 try:
                     st.write('PREDICCION ESPEFICIFA')
@@ -337,10 +366,10 @@ try:
             pred = mlp.predict(x)
             st.write(pred)
 
-            #PREDICCIONES PARA 
+            #PREDICCIONES PARA A
             if(len(numbers)>0):
                 numeros_split = numbers.split(",")
-                predict = [int(x) for x in numeros_split]
+                predict = [(x) for x in numeros_split]
                 #predict = le.fit_transform(predict) #esto para label encoder, si no se quiere usar se borra
                 try:
                     st.write('PREDICCION ESPEFICIFA')
