@@ -353,9 +353,3 @@ try:
 except Exception as e:
     print(e)
     st.write("Por favor subir archivo para poder ejecutar el algoritmo")
-
-
-
-
-
-    
